@@ -22,6 +22,8 @@
     <div class="container">
         <div class="headTextCenter">
             <h1>Hockey Trivia</h1>
+            <span id="timer"></span>
+            
         </div>
         
         <div class="butContainer">
@@ -31,13 +33,13 @@
         <div class="qAHolder">
             <div type="opt" class="question"></div>
             <br>
-            <div type="opt" class="choice1"></div>
+            <div id="choices" class="choice1"></div>
             <br>
-            <div type="opt" class="choice2"></div>
+            <div id="choices" class="choice2"></div>
             <br>
-            <div type="opt" class="choice3"></div>
+            <div id="choices" class="choice3"></div>
             <br>
-            <div type="opt"class="choice4"></div>
+            <div id="choices"class="choice4"></div>
             <br>
         </div>
     
@@ -46,9 +48,7 @@
 
 
     <script type="text/javascript">
-    //Global Var
-    var time = 30;
-
+    //Wuestion Variable Objects
     var one = {
         quest: '1. Who holds the record for all time penalty minutes?',
         choice1: 'A. Dave Hanson',
@@ -58,7 +58,6 @@
         answer: 'C. Tiger Williams',
        // document.body.style.backgroundImage = "url('img_tree.png')",
     }
-    
     var two = {
         quest: '2. What active NHL player holds the record for most games played?' , 
         choice1: 'A. Jaromir Jagr',
@@ -68,7 +67,6 @@
         answer: 'B. Jarome Iginla',
       //  document.body.style.backgroundImage = "url('img_tree.png')",
     }
-    
     var three = {
         quest: '3. Which goalie owns the record for the highest career save percentage?' ,
         choice1: 'A. Martin Brodeur',
@@ -78,7 +76,6 @@
         answer: 'D. Dominik Hašek',
         //document.body.style.backgroundImage = "url('img_tree.png')",
     }
-    
     var four = {
         quest: '4. Who has the NHL record for most fights?' ,
         choice1: 'A. Chris Nilan', 
@@ -88,7 +85,6 @@
         answer: 'D. Tie Domi',
         //document.body.style.backgroundImage = "url('img_tree.png')",
     }
-    
     var five = {
         quest: '5. What is a Gordie Howe hat-trick?', 
         choice1: 'A. A fight, a goal, and an assist',
@@ -98,7 +94,6 @@
         answer: 'A. fight, a goal, and an assist',
         //document.body.style.backgroundImage = "url('img_tree.png')";
     }
-    
     var six = { 
         quest: '6. Which team was on of the original 6 NHL teams?' ,
         choice1: 'A. Buffalo Sabres', 
@@ -108,7 +103,6 @@
         answer: 'B. Chicago Black Hawks',
         //document.body.style.backgroundImage = "url('img_tree.png')";
     }
-    
     var seven = {
         quest: '7. How many NHL teams are located in Canada?',
         choice1: 'A. 11',
@@ -118,7 +112,6 @@
         answer: 'C. 7',
         //document.body.style.backgroundImage = "url('img_tree.png')";
     }
-    
     var eight = {
         quest: '8. What NHL team has won the most Sanley Cups?',
         choice1: 'A. Boston Bruins', 
@@ -128,7 +121,6 @@
         answer: 'B. Montreal Canadiens', 
         //document.body.style.backgroundImage = "url('img_tree.png')";
     }
-    
     var nine = {
         quest: '9. What is the newest NHL Franchise?',
         choice1: 'A. Las Vegas Golden Nights', 
@@ -138,7 +130,6 @@
         answer: 'A. Las Vegas Golden Nights', 
         //document.body.style.backgroundImage = "url('img_tree.png')";
     }
-    
     var ten = {
         quest: '10. Who is the all time winningest coach?', 
         choice1: 'A. Reggie Dunlop',
@@ -148,7 +139,6 @@
         answer: 'C. Scotty Bowman',
         //document.body.style.backgroundImage = "url('img_tree.png')";
     }
-    
     var eleven = {
         quest: '11. What franchise drafted Wayne Gretzky?' ,
         choice1: 'A. New York Rangers',
@@ -158,103 +148,92 @@
         answer: 'C. Edmonton Oilers',
         //document.body.style.backgroundImage = "url('img_tree.png')";
     }
-    
+    //Array of question variable objects(above)
     var questArray = [one, two, three, four, five, six, seven, eight, nine, ten, eleven];
     
 
     var correctAnswers;
     var wrongAnswers;
+    var clickedAnswer;
     var intervalId;
+    var compareAnswer;
+    var clicked
 
-    //functions
-    function gamePlay() 
-    {
-
-        $('.startBut').on('click',function()
-        {
-            //removes buttons with class startButton
-            $('button').remove('.startBut');
-            
-            for(i = 0; i < questArray.length; i++){
-                
-                
-                $(".question").html(questArray[i].quest);
-                $(".choice1").html(questArray[i].choice1);
-                $(".choice2").html(questArray[i].choice2);
-                $(".choice3").html(questArray[i].choice3);
-                $(".choice4").html(questArray[i].choice4);
-                
-                
-                
-            }
-    
-        });
-
-    }
-    
-    
+    //Timing functions
+    var allTime = function () {
+        var count=30;
+        var counter=setInterval(timer, 1000); //1000 will  run it every 1 second
+        function timer(){
+        count=count-1;
+        if (count <= 0){
+            clearInterval(counter);
+            //counter ended, do something here
+            return;
+        }
+        //Code for showing the number of seconds here
+        document.getElementById("timer").innerHTML=count; // watch for spelling
+        }
+    };
+    //END:Timing functions
 
 
-
-
-   /* function populate()
-    {
-
+    function display () {
         $(".question").html(questArray[i].quest);
         $(".choice1").html(questArray[i].choice1);
         $(".choice2").html(questArray[i].choice2);
         $(".choice3").html(questArray[i].choice3);
         $(".choice4").html(questArray[i].choice4);
+    };
+
+    //functions
+    function gamePlay() {
+        $('.startBut').on('click',function()
+        {
+            //removes buttons with class startButton
+            $('button').hide('.butContainer');
+            //Start Questions
+            for (i = 0; i < questArray.length; i++) {
+            allTime();
+
+            display(questArray[i]);
+            console.log(questArray[i]);
+
+            //Add Result Tally
+            if(questArray[i].answer === clickedAnswer){
+                correctAnswers++
+            }  else {
+                wrongAnswers++
+            };
+
+
+
+           // questArray.forEach.display();
+            // document.addEventListener('click', clickAnswer, false );
+
+            }
+        });
+
     }
-
-    function populate2()
-    {
-
-        $(".question").html(two.quest);
-        $(".choice1").html(two.choice1);
-        $(".choice2").html(two.choice2);
-        $(".choice3").html(two.choice3);
-        $(".choice4").html(two.choice4);
-    }
-    function populate3()
-    {
-
-        $(".question").html(three.quest);
-        $(".choice1").html(three.choice1);
-        $(".choice2").html(three.choice2);
-        $(".choice3").html(three.choice3);
-        $(".choice4").html(three.choice4);
-    }
-
-
-   */
-
-
+      
+            
         
-        //creates new div in buttonContainer
-        //var newDiv = $('<div class=" quest q1">');
-        //newDiv.html(questions.q1); 
-        //$('butContainer').append(newDiv);
-        //newDiv.html(questions.q1); 
-        
-  
     
-
     
-
-    //Envoke gameplay
-    gamePlay();
-
+        //Envoke gameplay
+        gamePlay();
+     
     </script>
-
-
-
-
-
-
-    <!--<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="./assets/javascript/app2.js"></script>-->
 
 </body>
 
 </html>
+    
+    
+
+
+
+
+
+
+
+
